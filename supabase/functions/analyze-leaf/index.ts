@@ -12,18 +12,62 @@ Architecture Details:
 - Swin Transformer backbone extracts hierarchical multi-scale features using shifted window self-attention, capturing both local texture patterns and global leaf structure.
 - EfficientNetV2B0 branch provides efficient compound-scaled convolutional features with progressive learning.
 - Feature fusion layer concatenates outputs from both branches, combining the Transformer's global context with the CNN's local pattern recognition.
-- Final classification head uses a fully connected layer with softmax activation across 7 output classes (6 diseases + healthy).
+- Final classification head uses a fully connected layer with softmax activation across 31 output classes (30 diseases + healthy).
 
-Analyze the provided leaf image and classify it into exactly ONE of these 7 categories:
-1. Apple - Scab (Venturia inaequalis: olive-green to black velvety lesions on leaves)
-2. Tomato - Late Blight (Phytophthora infestans: water-soaked dark lesions, white mold on underside)
-3. Strawberry - Leaf Scorch (Diplocarpon earlianum: irregular dark purple spots with tan centers)
-4. Grape - Black Rot (Guignardia bidwellii: brown circular lesions, mummified fruit)
-5. Corn - Gray Leaf Spot (Cercospora zeae-maydis: rectangular gray-tan lesions bounded by veins)
-6. Corn - Common Rust (Puccinia sorghi: brick-red elongated pustules on both leaf surfaces)
-7. Healthy (no disease detected - specify plant species if identifiable)
+The model supports 5 plant species with 6 diseases each (30 total diseases + healthy):
+
+APPLE (6 diseases):
+1. apple_scab - Venturia inaequalis: olive-green to black velvety lesions
+2. apple_black_rot - Botryosphaeria obtusa: leaf spots with concentric rings, fruit rot
+3. apple_cedar_rust - Gymnosporangium: bright orange-yellow spots with tube structures
+4. apple_powdery_mildew - Podosphaera leucotricha: white powdery coating on leaves/shoots
+5. apple_fire_blight - Erwinia amylovora: blackened wilted shoots, bacterial ooze
+6. apple_alternaria_leaf_spot - Alternaria mali: brown spots with concentric rings, yellow halos
+
+TOMATO (6 diseases):
+7. tomato_late_blight - Phytophthora infestans: large water-soaked dark lesions, white mold
+8. tomato_early_blight - Alternaria solani: dark concentric ring target spots on lower leaves
+9. tomato_septoria - Septoria lycopersici: small circular spots with dark borders, gray centers
+10. tomato_bacterial_spot - Xanthomonas vesicatoria: small dark raised spots, yellow halos
+11. tomato_leaf_mold - Passalora fulva: pale green-yellow spots, olive-green velvety mold beneath
+12. tomato_mosaic_virus - ToMV: mottled mosaic pattern with leaf distortion
+
+STRAWBERRY (6 diseases):
+13. strawberry_scorch - Diplocarpon earlianum: irregular dark purple spots with tan centers
+14. strawberry_leaf_spot - Mycosphaerella fragariae: circular spots, white centers, reddish-purple borders
+15. strawberry_powdery_mildew - Podosphaera aphanis: white powdery growth, upward leaf curling
+16. strawberry_gray_mold - Botrytis cinerea: fuzzy gray fungal growth on fruit/flowers
+17. strawberry_angular_leaf_spot - Xanthomonas fragariae: water-soaked angular lesions
+18. strawberry_anthracnose - Colletotrichum acutatum: sunken dark lesions, salmon-colored spores
+
+GRAPE (6 diseases):
+19. grape_black_rot - Guignardia bidwellii: brown circular lesions, mummified fruit
+20. grape_downy_mildew - Plasmopara viticola: yellow oily spots, white cottony growth beneath
+21. grape_powdery_mildew - Erysiphe necator: white-gray powdery coating
+22. grape_leaf_blight - Pseudocercospora vitis: dark brown irregular blotches on margins
+23. grape_esca - Fungal trunk disease: tiger-stripe interveinal chlorosis/necrosis
+24. grape_anthracnose - Elsinoe ampelina: circular sunken spots with dark margins
+
+CORN (6 diseases):
+25. corn_gray_leaf_spot - Cercospora zeae-maydis: rectangular gray-tan lesions between veins
+26. corn_common_rust - Puccinia sorghi: brick-red elongated pustules on both surfaces
+27. corn_northern_leaf_blight - Exserohilum turcicum: long elliptical cigar-shaped lesions
+28. corn_southern_leaf_blight - Bipolaris maydis: small tan rectangular lesions between veins
+29. corn_cercospora_leaf_spot - Cercospora zeina: rectangular tan lesions with distinct borders
+30. corn_eyespot - Aureobasidium zeae: circular spots with tan centers, purple concentric rings
+
+31. healthy - No disease detected
 
 You MUST respond using the "classify_leaf" tool. Provide confidence scores that reflect realistic model output distributions.`;
+
+const ALL_CLASSES = [
+  "apple_scab", "apple_black_rot", "apple_cedar_rust", "apple_powdery_mildew", "apple_fire_blight", "apple_alternaria_leaf_spot",
+  "tomato_late_blight", "tomato_early_blight", "tomato_septoria", "tomato_bacterial_spot", "tomato_leaf_mold", "tomato_mosaic_virus",
+  "strawberry_scorch", "strawberry_leaf_spot", "strawberry_powdery_mildew", "strawberry_gray_mold", "strawberry_angular_leaf_spot", "strawberry_anthracnose",
+  "grape_black_rot", "grape_downy_mildew", "grape_powdery_mildew", "grape_leaf_blight", "grape_esca", "grape_anthracnose",
+  "corn_gray_leaf_spot", "corn_common_rust", "corn_northern_leaf_blight", "corn_southern_leaf_blight", "corn_cercospora_leaf_spot", "corn_eyespot",
+  "healthy",
+];
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -67,7 +111,7 @@ serve(async (req) => {
               },
               {
                 type: "text",
-                text: "Analyze this plant leaf image using the Swin Transformer + EfficientNetV2B0 fusion model. Identify the plant species and detect any diseases from the 6 supported disease classes. Provide classification with confidence scores reflecting the dual-branch architecture output.",
+                text: "Analyze this plant leaf image using the Swin Transformer + EfficientNetV2B0 fusion model. Classify into one of the 30 disease classes or healthy. Provide confidence scores.",
               },
             ],
           },
@@ -77,22 +121,14 @@ serve(async (req) => {
             type: "function",
             function: {
               name: "classify_leaf",
-              description: "Return the Swin-T + EfficientNetV2B0 fusion model disease classification result for a plant leaf image.",
+              description: "Return the Swin-T + EfficientNetV2B0 fusion model disease classification result.",
               parameters: {
                 type: "object",
                 properties: {
                   predicted_class: {
                     type: "string",
-                    enum: [
-                      "apple_scab",
-                      "tomato_late_blight",
-                      "strawberry_scorch",
-                      "grape_black_rot",
-                      "corn_gray_leaf_spot",
-                      "corn_common_rust",
-                      "healthy",
-                    ],
-                    description: "The predicted disease class from the fusion model",
+                    enum: ALL_CLASSES,
+                    description: "The predicted disease class from the fusion model softmax output",
                   },
                   confidence: {
                     type: "number",
@@ -122,7 +158,7 @@ serve(async (req) => {
                       },
                       required: ["class", "confidence"],
                     },
-                    description: "Top alternative predictions with confidence scores from the softmax layer",
+                    description: "Top 3-5 alternative predictions with confidence scores",
                   },
                 },
                 required: [
