@@ -42,7 +42,7 @@ export function PredictionResults({ result }: PredictionResultsProps) {
                 {result.disease?.species}
               </p>
             )}
-            <p className="text-sm text-muted-foreground mt-2">{result.disease?.description ?? "No disease detected. The leaf appears to be in good health."}</p>
+            <p className="text-sm text-muted-foreground mt-2">{result.description}</p>
           </div>
         </div>
       </div>

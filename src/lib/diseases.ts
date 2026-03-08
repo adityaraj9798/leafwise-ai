@@ -23,36 +23,56 @@ export interface PredictionResult {
   confidence: number;
   isHealthy: boolean;
   allPredictions: { label: string; confidence: number }[];
+  description: string;
 }
 
-export function simulatePrediction(): PredictionResult {
-  const isHealthy = Math.random() > 0.7;
-  
-  if (isHealthy) {
-    const species = SPECIES[Math.floor(Math.random() * (SPECIES.length - 1))];
-    return {
-      disease: null,
-      confidence: 0.92 + Math.random() * 0.07,
-      isHealthy: true,
-      allPredictions: [
-        { label: `${species} - Healthy`, confidence: 0.92 + Math.random() * 0.07 },
-        ...DISEASES.slice(0, 3).map(d => ({ label: `${d.species} - ${d.name}`, confidence: Math.random() * 0.05 })),
-      ],
-    };
+const DISEASE_LABELS: Record<string, string> = {
+  apple_scab: "Apple - Scab",
+  apple_black_rot: "Apple - Black Rot",
+  apple_cedar_rust: "Apple - Cedar Rust",
+  tomato_late_blight: "Tomato - Late Blight",
+  tomato_septoria: "Tomato - Septoria Leaf Spot",
+  strawberry_scorch: "Strawberry - Leaf Scorch",
+  grape_black_rot: "Grape - Black Rot",
+  healthy: "Healthy",
+};
+
+export async function analyzeLeafImage(imageDataUrl: string): Promise<PredictionResult> {
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+  const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+
+  const response = await fetch(`${supabaseUrl}/functions/v1/analyze-leaf`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${supabaseKey}`,
+    },
+    body: JSON.stringify({ image: imageDataUrl }),
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.error || `Analysis failed (${response.status})`);
   }
 
-  const disease = DISEASES[Math.floor(Math.random() * DISEASES.length)];
-  const conf = 0.85 + Math.random() * 0.14;
+  const data = await response.json();
+
+  const isHealthy = data.predicted_class === "healthy";
+  const disease = isHealthy ? null : DISEASES.find((d) => d.id === data.predicted_class) || null;
+
+  const allPredictions = [
+    { label: DISEASE_LABELS[data.predicted_class] || data.predicted_class, confidence: data.confidence },
+    ...(data.alternative_predictions || []).map((p: { class: string; confidence: number }) => ({
+      label: DISEASE_LABELS[p.class] || p.class,
+      confidence: p.confidence,
+    })),
+  ];
+
   return {
     disease,
-    confidence: conf,
-    isHealthy: false,
-    allPredictions: [
-      { label: `${disease.species} - ${disease.name}`, confidence: conf },
-      ...DISEASES.filter(d => d.id !== disease.id).slice(0, 3).map(d => ({
-        label: `${d.species} - ${d.name}`,
-        confidence: Math.random() * (1 - conf),
-      })),
-    ],
+    confidence: data.confidence,
+    isHealthy,
+    allPredictions,
+    description: data.description,
   };
 }
