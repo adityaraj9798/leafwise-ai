@@ -7,16 +7,15 @@ export interface Disease {
 }
 
 export const DISEASES: Disease[] = [
-  { id: "apple_scab", name: "Apple Scab", species: "Apple", description: "Fungal disease causing olive-green to black lesions on leaves and fruit.", severity: "severe" },
-  { id: "apple_black_rot", name: "Black Rot", species: "Apple", description: "Causes leaf spots, fruit rot, and cankers on branches.", severity: "severe" },
-  { id: "apple_cedar_rust", name: "Cedar Rust", species: "Apple", description: "Bright orange-yellow spots on leaves caused by Gymnosporangium fungi.", severity: "mild" },
+  { id: "apple_scab", name: "Apple Scab", species: "Apple", description: "Fungal disease causing olive-green to black lesions on leaves and fruit, caused by Venturia inaequalis.", severity: "severe" },
   { id: "tomato_late_blight", name: "Late Blight", species: "Tomato", description: "Water-soaked lesions that rapidly expand, caused by Phytophthora infestans.", severity: "severe" },
-  { id: "tomato_septoria", name: "Septoria Leaf Spot", species: "Tomato", description: "Small circular spots with dark borders and gray centers on lower leaves.", severity: "mild" },
-  { id: "strawberry_scorch", name: "Leaf Scorch", species: "Strawberry", description: "Irregular dark purple spots that develop tan centers on older leaves.", severity: "mild" },
-  { id: "grape_black_rot", name: "Black Rot", species: "Grape", description: "Brown circular lesions on leaves, shriveled mummified fruit.", severity: "severe" },
+  { id: "strawberry_scorch", name: "Leaf Scorch", species: "Strawberry", description: "Irregular dark purple spots that develop tan centers on older leaves, caused by Diplocarpon earlianum.", severity: "mild" },
+  { id: "grape_black_rot", name: "Black Rot", species: "Grape", description: "Brown circular lesions on leaves and shriveled mummified fruit, caused by Guignardia bidwellii.", severity: "severe" },
+  { id: "corn_gray_leaf_spot", name: "Gray Leaf Spot", species: "Corn", description: "Rectangular gray to tan lesions bounded by leaf veins, caused by Cercospora zeae-maydis.", severity: "mild" },
+  { id: "corn_common_rust", name: "Common Rust", species: "Corn", description: "Small, elongated, brick-red to brown pustules on both leaf surfaces, caused by Puccinia sorghi.", severity: "mild" },
 ];
 
-export const SPECIES = ["Apple", "Tomato", "Strawberry", "Grape", "Healthy"];
+export const SPECIES = ["Apple", "Tomato", "Strawberry", "Grape", "Corn"];
 
 export interface PredictionResult {
   disease: Disease | null;
@@ -28,12 +27,11 @@ export interface PredictionResult {
 
 const DISEASE_LABELS: Record<string, string> = {
   apple_scab: "Apple - Scab",
-  apple_black_rot: "Apple - Black Rot",
-  apple_cedar_rust: "Apple - Cedar Rust",
   tomato_late_blight: "Tomato - Late Blight",
-  tomato_septoria: "Tomato - Septoria Leaf Spot",
   strawberry_scorch: "Strawberry - Leaf Scorch",
   grape_black_rot: "Grape - Black Rot",
+  corn_gray_leaf_spot: "Corn - Gray Leaf Spot",
+  corn_common_rust: "Corn - Common Rust",
   healthy: "Healthy",
 };
 
