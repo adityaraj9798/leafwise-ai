@@ -1,28 +1,71 @@
-# Project Setup
+# 🌿 LeafGuard AI
 
-This project is built using **React**, **TypeScript**, and **Vite** to create a fast and modern web application for plant disease detection.
+LeafGuard AI is a deep learning–based web application that detects plant diseases from leaf images.
+The system analyzes uploaded images using a hybrid deep learning approach to identify diseases across multiple plant species.
 
 ---
 
-## Running the Project Locally
+## 🚀 Features
 
-Follow the steps below to run the project on your local machine.
+* Upload leaf images to detect plant diseases instantly
+* Supports multiple plant species detection
+* High accuracy prediction using deep learning models
+* Simple and user-friendly interface
+* Fast image processing and result display
+
+---
+
+## 🧠 Model Architecture
+
+LeafGuard AI combines two powerful deep learning architectures:
+
+* **Swin Transformer** – captures global contextual features from leaf images
+* **EfficientNetV2B0** – extracts fine-grained local features for accurate classification
+
+The fusion of these models helps improve disease detection performance and robustness.
+
+---
+
+## 📊 Dataset
+
+The model is trained and evaluated on the **PlantVillage dataset**, a widely used dataset for plant disease classification containing thousands of labeled leaf images.
+
+---
+
+## 🛠️ Tech Stack
+
+**Frontend**
+
+* React
+* TypeScript
+* Vite
+* Tailwind CSS
+
+**Machine Learning**
+
+* Deep Learning (CNN + Transformer architecture)
+* Swin Transformer
+* EfficientNetV2B0
+
+---
+
+## ⚙️ Project Setup
 
 ### Prerequisites
 
 Make sure you have the following installed:
 
-- Node.js (v16 or later recommended)
-- npm
+* Node.js
+* npm
 
-You can download Node.js from:  
+Download Node.js from:
 https://nodejs.org/
 
 ---
 
 ### Installation
 
-Clone the repository and install the required dependencies.
+Clone the repository and install dependencies.
 
 ```bash
 # Clone the repository
@@ -37,12 +80,37 @@ npm install
 
 ---
 
-### Start the Development Server
+### Run the Project
 
-Run the following command to start the application locally:
+Start the development server:
 
 ```bash
 npm run dev
 ```
 
-After starting the server, open the provided local URL (usually `http://localhost:5173`) in your browser to view the application.
+After running the command, open the provided local URL (usually `http://localhost:5173`) in your browser.
+
+---
+
+## 📸 How It Works
+
+1. Upload a leaf image
+2. The model processes the image
+3. AI analyzes patterns and symptoms
+4. The system predicts the disease with high accuracy
+
+---
+
+## 🎯 Future Improvements
+
+* Support more plant species
+* Mobile-friendly version
+* Real-time disease detection using camera
+* Farmer advisory system with treatment suggestions
+
+---
+
+## 👨‍💻 Author
+
+Aditya Raj
+Electronics and Communication Engineering Student | Passionate Programmer
