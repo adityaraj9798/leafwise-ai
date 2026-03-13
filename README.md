@@ -1,49 +1,48 @@
 # Project Setup
 
-This project was created using **Lovable** and is built with modern frontend tools like **React, TypeScript, and Vite**.
-
-## Project Link
-You can view and manage the project here:
-
-https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+This project is built using **React**, **TypeScript**, and **Vite** to create a fast and modern web application for plant disease detection.
 
 ---
 
-## Editing the Project
+## Running the Project Locally
 
-There are several ways to work on this project depending on your workflow.
+Follow the steps below to run the project on your local machine.
 
-### 1. Edit using Lovable
-The easiest way is through the Lovable interface.
+### Prerequisites
 
-Open the project in Lovable and start editing directly. Any changes made there will automatically be committed to this repository.
-
----
-
-### 2. Run the Project Locally
-
-If you prefer working in your own editor (for example VS Code), you can clone the repository and run it locally.
-
-#### Requirements
 Make sure you have the following installed:
 
-- Node.js
+- Node.js (v16 or later recommended)
 - npm
 
-If Node.js is not installed, you can install it using **nvm**:  
-https://github.com/nvm-sh/nvm
+You can download Node.js from:  
+https://nodejs.org/
 
-#### Steps to run locally
+---
+
+### Installation
+
+Clone the repository and install the required dependencies.
 
 ```bash
 # Clone the repository
-git clone <YOUR_GIT_URL>
+git clone <YOUR_GITHUB_REPOSITORY_LINK>
 
 # Navigate to the project folder
-cd <YOUR_PROJECT_NAME>
+cd <PROJECT_FOLDER_NAME>
 
 # Install dependencies
 npm install
+```
 
-# Start the development server
+---
+
+### Start the Development Server
+
+Run the following command to start the application locally:
+
+```bash
 npm run dev
+```
+
+After starting the server, open the provided local URL (usually `http://localhost:5173`) in your browser to view the application.
